@@ -3,6 +3,14 @@ import {
     useNavigate,
 } from "react-router-dom";
 
+import {
+    LayoutDashboard,
+    Briefcase,
+    Layers3,
+    Sparkles,
+    FolderGit2,
+} from "lucide-react";
+
 import useAuth
     from "../../features/auth/hooks/useAuth";
 
@@ -15,22 +23,27 @@ const NAVIGATION_ITEMS = [
     {
         path: "/dashboard",
         label: "Dashboard",
+        icon: LayoutDashboard,
     },
     {
         path: "/experiences",
         label: "Experiences",
+        icon: Briefcase,
     },
     {
         path: "/services",
         label: "Services",
+        icon: Layers3,
     },
     {
         path: "/capabilities",
         label: "Capabilities",
+        icon: Sparkles,
     },
     {
         path: "/projects",
         label: "Projects",
+        icon: FolderGit2,
     },
 ];
 
@@ -88,9 +101,14 @@ export default function Sidebar() {
                     "Admin navigation"
                 }
             >
-                {
-                    NAVIGATION_ITEMS.map(
-                        item => (
+            {
+                NAVIGATION_ITEMS.map(
+                    item => {
+
+                        const Icon =
+                            item.icon;
+
+                        return (
                             <NavLink
                                 key={
                                     item.path
@@ -106,11 +124,22 @@ export default function Sidebar() {
                                         : "admin-sidebar__link"
                                 }
                             >
-                                {item.label}
+                                <Icon
+                                    size={18}
+                                    strokeWidth={2}
+                                    className={
+                                        "admin-sidebar__link-icon"
+                                    }
+                                />
+
+                                <span>
+                                    {item.label}
+                                </span>
                             </NavLink>
-                        )
-                    )
-                }
+                        );
+                    }
+                )
+            }
             </nav>
 
             <div
