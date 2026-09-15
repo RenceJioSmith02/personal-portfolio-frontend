@@ -1,0 +1,128 @@
+.ui-button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+
+    min-height: 42px;
+
+    border: 1px solid transparent;
+    border-radius: var(--admin-radius-sm);
+
+    padding: 0.68rem 1rem;
+
+    font-weight: 800;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        transform var(--admin-transition-fast) var(--admin-ease),
+        color var(--admin-transition-fast),
+        background var(--admin-transition-fast),
+        border-color var(--admin-transition-fast),
+        box-shadow var(--admin-transition-fast);
+}
+
+.ui-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.ui-button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+}
+
+.ui-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+}
+
+.ui-button--primary {
+    color: var(--admin-primary-text);
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+
+    box-shadow:
+        0 10px 30px
+        rgba(99, 234, 211, 0.16);
+}
+
+.ui-button--primary:hover:not(:disabled) {
+    background: var(--admin-primary-hover);
+    border-color: var(--admin-primary-hover);
+}
+
+.ui-button--secondary {
+    color: var(--admin-text);
+    background: var(--admin-surface-raised);
+    border-color: var(--admin-border);
+}
+
+.ui-button--secondary:hover:not(:disabled) {
+    background: var(--admin-surface-hover);
+    border-color: var(--admin-border-strong);
+}
+
+.ui-button--danger {
+    color: #ffffff;
+    background: var(--admin-danger);
+    border-color: var(--admin-danger);
+}
+
+.ui-button--danger:hover:not(:disabled) {
+    background: var(--admin-danger-hover);
+    border-color: var(--admin-danger-hover);
+}
+
+.ui-button--ghost {
+    color: var(--admin-text-muted);
+    background: transparent;
+    border-color: transparent;
+}
+
+.ui-button--ghost:hover:not(:disabled) {
+    color: var(--admin-text);
+    background: var(--admin-surface-hover);
+}
+
+.ui-button--small {
+    min-height: 36px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.86rem;
+}
+
+.ui-button--medium {
+    min-height: 42px;
+}
+
+.ui-button--large {
+    min-height: 48px;
+    padding: 0.78rem 1.2rem;
+}
+
+.ui-button--full-width {
+    width: 100%;
+}
+
+.ui-button__spinner {
+    width: 1rem;
+    height: 1rem;
+
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+
+    animation:
+        ui-button-spin
+        700ms
+        linear
+        infinite;
+}
+
+@keyframes ui-button-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

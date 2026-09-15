@@ -4,6 +4,15 @@ import {
     useState,
 } from "react";
 
+import ConfirmDialog
+    from "../../../shared/components/ConfirmDialog/ConfirmDialog";
+
+import Modal
+    from "../../../shared/components/Modal/Modal";
+
+import PageHeader
+    from "../../../shared/components/PageHeader/PageHeader";
+
 import ExperienceForm
     from "../components/ExperienceForm";
 
@@ -12,6 +21,7 @@ import ExperienceList
 
 import {
     createExperience,
+    deleteExperience,
     getExperiences,
     updateExperience,
 } from "../services/experienceService";
@@ -36,6 +46,11 @@ export default function ExperiencePage() {
     ] = useState(false);
 
     const [
+        deleting,
+        setDeleting,
+    ] = useState(false);
+
+    const [
         pageError,
         setPageError,
     ] = useState("");
@@ -48,6 +63,11 @@ export default function ExperiencePage() {
     const [
         selectedExperience,
         setSelectedExperience,
+    ] = useState(null);
+
+    const [
+        experienceToDelete,
+        setExperienceToDelete,
     ] = useState(null);
 
     const loadExperiences =
@@ -114,6 +134,24 @@ export default function ExperiencePage() {
         setSelectedExperience(null);
     }
 
+    function openDeleteDialog(
+        experience
+    ) {
+
+        setExperienceToDelete(
+            experience
+        );
+    }
+
+    function closeDeleteDialog() {
+
+        if (deleting) {
+            return;
+        }
+
+        setExperienceToDelete(null);
+    }
+
     async function handleSubmit(
         payload
     ) {
@@ -147,101 +185,173 @@ export default function ExperiencePage() {
         }
     }
 
+    async function handleDelete() {
+
+        if (!experienceToDelete) {
+            return;
+        }
+
+        setDeleting(true);
+        setPageError("");
+
+        try {
+
+            await deleteExperience(
+                experienceToDelete.id
+            );
+
+            await loadExperiences();
+
+            setExperienceToDelete(null);
+
+        } catch (exception) {
+
+            const message =
+                exception.response
+                    ?.data
+                    ?.message;
+
+            setPageError(
+                message
+                || "Unable to delete experience."
+            );
+
+        } finally {
+
+            setDeleting(false);
+        }
+    }
+
+    const formTitle =
+        selectedExperience
+            ? "Update Experience"
+            : "Create Experience";
+
+    const deleteMessage =
+        experienceToDelete
+            ? `Delete the experience "${experienceToDelete.position}" at "${experienceToDelete.company}"? This action cannot be undone.`
+            : "";
+
     return (
         <div
             className={
                 "experience-page"
             }
         >
-
-            <header
-                className={
-                    "experience-page__header"
+            <PageHeader
+                title={
+                    "Experience Management"
                 }
-            >
-
-                <div>
-                    <h1>
-                        Experience Management
-                    </h1>
-
-                    <p>
-                        Manage the work experiences
-                        displayed in your portfolio.
-                    </p>
-                </div>
-
-                <button
-                    type="button"
-                    className={
-                        "experience-button "
-                        + "experience-button--primary"
-                    }
-                    onClick={
-                        openCreateModal
-                    }
-                >
-                    Create Experience
-                </button>
-
-            </header>
+                description={
+                    "Manage the work experiences "
+                    + "displayed in your portfolio."
+                }
+                actionLabel={
+                    "Create Experience"
+                }
+                onAction={
+                    openCreateModal
+                }
+            />
 
             {
                 pageError && (
                     <div
                         className={
-                            "experience-alert "
-                            + "experience-alert--error"
+                            "admin-alert "
+                            + "admin-alert--error "
+                            + "experience-page__alert"
                         }
+                        role="alert"
                     >
                         {pageError}
                     </div>
                 )
             }
 
-            {
-                loading
-                    ? (
-                        <p>
-                            Loading experiences...
-                        </p>
-                    )
-                    : (
-                        <ExperienceList
-                            experiences={
-                                experiences
-                            }
-                            onEdit={
-                                openUpdateModal
-                            }
-                        />
-                    )
-            }
+            <ExperienceList
+                experiences={
+                    experiences
+                }
+                loading={
+                    loading
+                }
+                onCreate={
+                    openCreateModal
+                }
+                onEdit={
+                    openUpdateModal
+                }
+                onDelete={
+                    openDeleteDialog
+                }
+            />
 
-            {
-                isFormOpen && (
-                    <ExperienceForm
-                        key={
-                            selectedExperience
-                                ?.id
-                            ?? "create"
-                        }
-                        experience={
-                            selectedExperience
-                        }
-                        submitting={
-                            submitting
-                        }
-                        onSubmit={
-                            handleSubmit
-                        }
-                        onCancel={
-                            closeFormModal
-                        }
-                    />
-                )
-            }
+            <Modal
+                open={
+                    isFormOpen
+                }
+                title={
+                    formTitle
+                }
+                onClose={
+                    closeFormModal
+                }
+                busy={
+                    submitting
+                }
+                size="medium"
+            >
+                <ExperienceForm
+                    key={
+                        selectedExperience
+                            ?.id
+                        ?? "create"
+                    }
+                    experience={
+                        selectedExperience
+                    }
+                    submitting={
+                        submitting
+                    }
+                    onSubmit={
+                        handleSubmit
+                    }
+                    onCancel={
+                        closeFormModal
+                    }
+                />
+            </Modal>
 
+            <ConfirmDialog
+                open={
+                    Boolean(
+                        experienceToDelete
+                    )
+                }
+                title={
+                    "Delete Experience"
+                }
+                message={
+                    deleteMessage
+                }
+                confirmLabel={
+                    "Delete Experience"
+                }
+                cancelLabel={
+                    "Cancel"
+                }
+                busy={
+                    deleting
+                }
+                variant="danger"
+                onConfirm={
+                    handleDelete
+                }
+                onCancel={
+                    closeDeleteDialog
+                }
+            />
         </div>
     );
 }

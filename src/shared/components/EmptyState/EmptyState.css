@@ -1,0 +1,51 @@
+.ui-empty-state {
+    display: grid;
+    justify-items: center;
+
+    gap: 0.8rem;
+    padding: 3.5rem 1.5rem;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18, 36, 59, 0.9),
+            rgba(10, 23, 40, 0.9)
+        );
+
+    border:
+        1px dashed
+        var(--admin-border-strong);
+
+    border-radius:
+        var(--admin-radius-lg);
+}
+
+.ui-empty-state__icon {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius:
+        var(--admin-radius-lg);
+
+    color: var(--admin-primary);
+    background: var(--admin-primary-soft);
+
+    font-size: 1.5rem;
+}
+
+.ui-empty-state h2 {
+    margin: 0;
+}
+
+.ui-empty-state p {
+    max-width: 34rem;
+}
+
+.ui-empty-state .ui-button {
+    margin-top: 0.35rem;
+}

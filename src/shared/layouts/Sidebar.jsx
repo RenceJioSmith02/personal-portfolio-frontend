@@ -1,13 +1,46 @@
 import {
-    Link,
+    NavLink,
+    useNavigate,
 } from "react-router-dom";
 
 import useAuth
     from "../../features/auth/hooks/useAuth";
 
+import Button
+    from "../components/Button/Button";
+
+import "./Sidebar.css";
+
+const NAVIGATION_ITEMS = [
+    {
+        path: "/dashboard",
+        label: "Dashboard",
+    },
+    {
+        path: "/experiences",
+        label: "Experiences",
+    },
+    {
+        path: "/services",
+        label: "Services",
+    },
+    {
+        path: "/capabilities",
+        label: "Capabilities",
+    },
+    {
+        path: "/projects",
+        label: "Projects",
+    },
+];
+
 export default function Sidebar() {
 
+    const navigate =
+        useNavigate();
+
     const {
+        user,
         logout,
     } = useAuth();
 
@@ -15,77 +48,112 @@ export default function Sidebar() {
 
         await logout();
 
-        window.location.href =
-            "/login";
+        navigate(
+            "/login",
+            {
+                replace: true,
+            }
+        );
     }
 
     return (
         <aside
-            style={{
-                width: "250px",
-                padding: "20px",
-                borderRight:
-                    "1px solid #ddd",
-                minHeight: "100vh",
-            }}
+            className={
+                "admin-sidebar"
+            }
         >
-            <h2>
-                Portfolio CMS
-            </h2>
-
-            <nav>
-
-                <p>
-                    <Link
-                        to="/dashboard"
-                    >
-                        Dashboard
-                    </Link>
-                </p>
-
-                <p>
-                    <Link
-                        to="/experiences"
-                    >
-                        Experiences
-                    </Link>
-                </p>
-
-                <p>
-                    <Link
-                        to="/services"
-                    >
-                        Services
-                    </Link>
-                </p>
-
-                <p>
-                    <Link
-                        to="/capabilities"
-                    >
-                        Capabilities
-                    </Link>
-                </p>
-
-                <p>
-                    <Link
-                        to="/projects"
-                    >
-                        Projects
-                    </Link>
-                </p>
-
-            </nav>
-
-            <hr />
-
-            <button
-                onClick={
-                    handleLogout
+            <div
+                className={
+                    "admin-sidebar__brand"
                 }
             >
-                Logout
-            </button>
+                <span
+                    className={
+                        "admin-sidebar__eyebrow"
+                    }
+                >
+                    Admin Portal
+                </span>
+
+                <h1>
+                    Portfolio CMS
+                </h1>
+            </div>
+
+            <nav
+                className={
+                    "admin-sidebar__navigation"
+                }
+                aria-label={
+                    "Admin navigation"
+                }
+            >
+                {
+                    NAVIGATION_ITEMS.map(
+                        item => (
+                            <NavLink
+                                key={
+                                    item.path
+                                }
+                                to={
+                                    item.path
+                                }
+                                className={({
+                                    isActive,
+                                }) =>
+                                    isActive
+                                        ? "admin-sidebar__link admin-sidebar__link--active"
+                                        : "admin-sidebar__link"
+                                }
+                            >
+                                {item.label}
+                            </NavLink>
+                        )
+                    )
+                }
+            </nav>
+
+            <div
+                className={
+                    "admin-sidebar__footer"
+                }
+            >
+                {
+                    user && (
+                        <div
+                            className={
+                                "admin-sidebar__user"
+                            }
+                        >
+                            <span>
+                                Signed in as
+                            </span>
+
+                            <strong>
+                                {
+                                    user.username
+                                }
+                            </strong>
+
+                            <small>
+                                {
+                                    user.role
+                                }
+                            </small>
+                        </div>
+                    )
+                }
+
+                <Button
+                    variant="secondary"
+                    fullWidth
+                    onClick={
+                        handleLogout
+                    }
+                >
+                    Logout
+                </Button>
+            </div>
         </aside>
     );
 }

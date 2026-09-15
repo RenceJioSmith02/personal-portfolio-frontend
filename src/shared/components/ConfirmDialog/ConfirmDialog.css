@@ -1,0 +1,32 @@
+.ui-confirm-dialog {
+    display: grid;
+
+    grid-template-columns:
+        auto
+        minmax(0, 1fr);
+
+    align-items: flex-start;
+
+    gap: 1rem;
+}
+
+.ui-confirm-dialog__icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    color: #ffffff;
+    background: var(--admin-danger);
+
+    font-size: 1.2rem;
+    font-weight: 900;
+}
+
+.ui-confirm-dialog p {
+    padding-top: 0.35rem;
+    color: var(--admin-text-muted);
+}

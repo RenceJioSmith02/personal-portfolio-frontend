@@ -1,3 +1,9 @@
+import Button
+    from "../../../shared/components/Button/Button";
+
+import DataTable
+    from "../../../shared/components/DataTable/DataTable";
+
 function formatDate(dateValue) {
 
     if (!dateValue) {
@@ -19,180 +25,149 @@ function formatDate(dateValue) {
     );
 }
 
+function formatDuration(
+    experience
+) {
+
+    const startDate =
+        formatDate(
+            experience.startDate
+        );
+
+    const endDate =
+        experience.currentlyWorking
+            ? "Present"
+            : formatDate(
+                experience.endDate
+            );
+
+    return `${startDate} - ${endDate}`;
+}
+
 export default function ExperienceList({
     experiences,
+    loading,
+    onCreate,
     onEdit,
+    onDelete,
 }) {
 
-    if (experiences.length === 0) {
+    const columns = [
+        {
+            id: "company",
+            header: "Company",
+            render: experience => (
+                <strong>
+                    {
+                        experience.company
+                    }
+                </strong>
+            ),
+        },
+        {
+            id: "position",
+            header: "Position",
+            accessor: "position",
+        },
+        {
+            id: "duration",
+            header: "Duration",
+            render: experience =>
+                formatDuration(
+                    experience
+                ),
+        },
+        {
+            id: "displayOrder",
+            header: "Order",
+            accessor: "displayOrder",
+            align: "center",
+        },
+        {
+            id: "status",
+            header: "Status",
+            render: experience => (
+                <span
+                    className={
+                        experience.published
+                            ? "admin-status admin-status--published"
+                            : "admin-status admin-status--draft"
+                    }
+                >
+                    {
+                        experience.published
+                            ? "Published"
+                            : "Draft"
+                    }
+                </span>
+            ),
+        },
+        {
+            id: "actions",
+            header: "Actions",
+            align: "right",
+            render: experience => (
+                <div
+                    className={
+                        "experience-list__actions"
+                    }
+                >
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        size="small"
+                        onClick={
+                            () => onEdit(
+                                experience
+                            )
+                        }
+                    >
+                        Edit
+                    </Button>
 
-        return (
-            <div
-                className={
-                    "experience-empty-state"
-                }
-            >
-                <h2>
-                    No experiences found
-                </h2>
-
-                <p>
-                    Click Create Experience to
-                    add your first work experience.
-                </p>
-            </div>
-        );
-    }
+                    <Button
+                        type="button"
+                        variant="danger"
+                        size="small"
+                        onClick={
+                            () => onDelete(
+                                experience
+                            )
+                        }
+                    >
+                        Delete
+                    </Button>
+                </div>
+            ),
+        },
+    ];
 
     return (
-        <div
-            className={
-                "experience-table-wrapper"
+        <DataTable
+            columns={columns}
+            rows={experiences}
+            getRowKey={
+                experience =>
+                    experience.id
             }
-        >
-
-            <table
-                className={
-                    "experience-table"
-                }
-            >
-
-                <thead>
-                    <tr>
-                        <th>
-                            Company
-                        </th>
-
-                        <th>
-                            Position
-                        </th>
-
-                        <th>
-                            Duration
-                        </th>
-
-                        <th>
-                            Order
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th
-                            className={
-                                "experience-table__actions"
-                            }
-                        >
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {
-                        experiences.map(
-                            experience => (
-
-                                <tr
-                                    key={
-                                        experience.id
-                                    }
-                                >
-
-                                    <td>
-                                        <strong>
-                                            {
-                                                experience
-                                                    .company
-                                            }
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        {
-                                            experience
-                                                .position
-                                        }
-                                    </td>
-
-                                    <td>
-                                        {
-                                            formatDate(
-                                                experience
-                                                    .startDate
-                                            )
-                                        }
-
-                                        {" - "}
-
-                                        {
-                                            experience
-                                                .currentlyWorking
-                                                ? "Present"
-                                                : formatDate(
-                                                    experience
-                                                        .endDate
-                                                )
-                                        }
-                                    </td>
-
-                                    <td>
-                                        {
-                                            experience
-                                                .displayOrder
-                                        }
-                                    </td>
-
-                                    <td>
-                                        <span
-                                            className={
-                                                experience
-                                                    .published
-                                                    ? "experience-badge experience-badge--published"
-                                                    : "experience-badge experience-badge--draft"
-                                            }
-                                        >
-                                            {
-                                                experience
-                                                    .published
-                                                    ? "Published"
-                                                    : "Draft"
-                                            }
-                                        </span>
-                                    </td>
-
-                                    <td
-                                        className={
-                                            "experience-table__actions"
-                                        }
-                                    >
-                                        <button
-                                            type="button"
-                                            className={
-                                                "experience-button "
-                                                + "experience-button--secondary"
-                                            }
-                                            onClick={
-                                                () => onEdit(
-                                                    experience
-                                                )
-                                            }
-                                        >
-                                            Edit
-                                        </button>
-                                    </td>
-
-                                </tr>
-                            )
-                        )
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
+            loading={loading}
+            ariaLabel={
+                "Experience management table"
+            }
+            emptyTitle={
+                "No experiences found"
+            }
+            emptyDescription={
+                "Create your first work "
+                + "experience to display "
+                + "it in your portfolio."
+            }
+            emptyActionLabel={
+                "Create Experience"
+            }
+            onEmptyAction={
+                onCreate
+            }
+        />
     );
 }

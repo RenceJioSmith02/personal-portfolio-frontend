@@ -1,7 +1,9 @@
 import {
-    useEffect,
     useState,
 } from "react";
+
+import Button
+    from "../../../shared/components/Button/Button";
 
 const EMPTY_FORM = {
     company: "",
@@ -19,7 +21,9 @@ function createInitialForm(
 ) {
 
     if (!experience) {
-        return EMPTY_FORM;
+        return {
+            ...EMPTY_FORM,
+        };
     }
 
     return {
@@ -83,39 +87,6 @@ export default function ExperienceForm({
         setError,
     ] = useState("");
 
-    useEffect(() => {
-
-        function handleEscape(
-            event
-        ) {
-
-            if (
-                event.key === "Escape"
-                && !submitting
-            ) {
-
-                onCancel();
-            }
-        }
-
-        document.addEventListener(
-            "keydown",
-            handleEscape
-        );
-
-        return () => {
-
-            document.removeEventListener(
-                "keydown",
-                handleEscape
-            );
-        };
-
-    }, [
-        onCancel,
-        submitting,
-    ]);
-
     function handleChange(event) {
 
         const {
@@ -158,20 +129,6 @@ export default function ExperienceForm({
                             .endDate,
             })
         );
-    }
-
-    function handleBackdropClick(
-        event
-    ) {
-
-        if (
-            event.target
-            === event.currentTarget
-            && !submitting
-        ) {
-
-            onCancel();
-        }
     }
 
     async function handleSubmit(
@@ -295,347 +252,303 @@ export default function ExperienceForm({
     }
 
     return (
-        <div
+        <form
             className={
-                "experience-modal-backdrop"
+                "experience-form"
             }
-            role="presentation"
-            onMouseDown={
-                handleBackdropClick
+            onSubmit={
+                handleSubmit
             }
         >
-
-            <section
+            <div
                 className={
-                    "experience-modal"
-                }
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby={
-                    "experience-modal-title"
+                    "experience-form__grid"
                 }
             >
-
-                <header
+                <div
                     className={
-                        "experience-modal__header"
+                        "experience-form__field"
                     }
                 >
-
-                    <h2
-                        id={
-                            "experience-modal-title"
-                        }
+                    <label
+                        htmlFor="company"
                     >
-                        {
-                            isEditing
-                                ? "Update Experience"
-                                : "Create Experience"
-                        }
-                    </h2>
+                        Company
+                    </label>
 
-                    <button
-                        type="button"
-                        className={
-                            "experience-modal__close"
+                    <input
+                        id="company"
+                        name="company"
+                        type="text"
+                        maxLength={255}
+                        value={
+                            formData.company
                         }
-                        aria-label={
-                            "Close experience form"
+                        onChange={
+                            handleChange
                         }
                         disabled={
                             submitting
                         }
-                        onClick={
-                            onCancel
-                        }
-                    >
-                        ×
-                    </button>
+                        required
+                    />
+                </div>
 
-                </header>
-
-                <form
+                <div
                     className={
-                        "experience-form"
-                    }
-                    onSubmit={
-                        handleSubmit
+                        "experience-form__field"
                     }
                 >
+                    <label
+                        htmlFor="position"
+                    >
+                        Position
+                    </label>
 
+                    <input
+                        id="position"
+                        name="position"
+                        type="text"
+                        maxLength={255}
+                        value={
+                            formData.position
+                        }
+                        onChange={
+                            handleChange
+                        }
+                        disabled={
+                            submitting
+                        }
+                        required
+                    />
+                </div>
+
+                <div
+                    className={
+                        "experience-form__field"
+                    }
+                >
+                    <label
+                        htmlFor="startDate"
+                    >
+                        Start Date
+                    </label>
+
+                    <input
+                        id="startDate"
+                        name="startDate"
+                        type="date"
+                        value={
+                            formData.startDate
+                        }
+                        onChange={
+                            handleChange
+                        }
+                        disabled={
+                            submitting
+                        }
+                        required
+                    />
+                </div>
+
+                <div
+                    className={
+                        "experience-form__field"
+                    }
+                >
+                    <label
+                        htmlFor="endDate"
+                    >
+                        End Date
+                    </label>
+
+                    <input
+                        id="endDate"
+                        name="endDate"
+                        type="date"
+                        min={
+                            formData.startDate
+                            || undefined
+                        }
+                        value={
+                            formData.endDate
+                        }
+                        onChange={
+                            handleChange
+                        }
+                        disabled={
+                            submitting
+                            || formData
+                                .currentlyWorking
+                        }
+                    />
+                </div>
+
+                <div
+                    className={
+                        "experience-form__field"
+                    }
+                >
+                    <label
+                        htmlFor="displayOrder"
+                    >
+                        Display Order
+                    </label>
+
+                    <input
+                        id="displayOrder"
+                        name="displayOrder"
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={
+                            formData.displayOrder
+                        }
+                        onChange={
+                            handleChange
+                        }
+                        disabled={
+                            submitting
+                        }
+                        required
+                    />
+                </div>
+
+                <div
+                    className={
+                        "experience-form__checkboxes"
+                    }
+                >
+                    <label
+                        className={
+                            "experience-form__checkbox"
+                        }
+                    >
+                        <input
+                            name={
+                                "currentlyWorking"
+                            }
+                            type="checkbox"
+                            checked={
+                                formData
+                                    .currentlyWorking
+                            }
+                            onChange={
+                                handleCurrentlyWorkingChange
+                            }
+                            disabled={
+                                submitting
+                            }
+                        />
+
+                        <span>
+                            Currently working
+                        </span>
+                    </label>
+
+                    <label
+                        className={
+                            "experience-form__checkbox"
+                        }
+                    >
+                        <input
+                            name="published"
+                            type="checkbox"
+                            checked={
+                                formData.published
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            disabled={
+                                submitting
+                            }
+                        />
+
+                        <span>
+                            Published
+                        </span>
+                    </label>
+                </div>
+
+                <div
+                    className={
+                        "experience-form__field "
+                        + "experience-form__field--full"
+                    }
+                >
+                    <label
+                        htmlFor="description"
+                    >
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        maxLength={5000}
+                        rows={6}
+                        value={
+                            formData.description
+                        }
+                        onChange={
+                            handleChange
+                        }
+                        disabled={
+                            submitting
+                        }
+                    />
+                </div>
+            </div>
+
+            {
+                error && (
                     <div
                         className={
-                            "experience-form__grid"
+                            "admin-alert "
+                            + "admin-alert--error "
+                            + "experience-form__error"
                         }
+                        role="alert"
                     >
-
-                        <div
-                            className={
-                                "experience-form__field"
-                            }
-                        >
-                            <label
-                                htmlFor="company"
-                            >
-                                Company
-                            </label>
-
-                            <input
-                                id="company"
-                                name="company"
-                                type="text"
-                                maxLength={255}
-                                value={
-                                    formData.company
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                required
-                            />
-                        </div>
-
-                        <div
-                            className={
-                                "experience-form__field"
-                            }
-                        >
-                            <label
-                                htmlFor="position"
-                            >
-                                Position
-                            </label>
-
-                            <input
-                                id="position"
-                                name="position"
-                                type="text"
-                                maxLength={255}
-                                value={
-                                    formData.position
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                required
-                            />
-                        </div>
-
-                        <div
-                            className={
-                                "experience-form__field"
-                            }
-                        >
-                            <label
-                                htmlFor="startDate"
-                            >
-                                Start Date
-                            </label>
-
-                            <input
-                                id="startDate"
-                                name="startDate"
-                                type="date"
-                                value={
-                                    formData.startDate
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                required
-                            />
-                        </div>
-
-                        <div
-                            className={
-                                "experience-form__field"
-                            }
-                        >
-                            <label
-                                htmlFor="endDate"
-                            >
-                                End Date
-                            </label>
-
-                            <input
-                                id="endDate"
-                                name="endDate"
-                                type="date"
-                                min={
-                                    formData.startDate
-                                    || undefined
-                                }
-                                value={
-                                    formData.endDate
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                disabled={
-                                    formData
-                                        .currentlyWorking
-                                }
-                            />
-                        </div>
-
-                        <div
-                            className={
-                                "experience-form__field"
-                            }
-                        >
-                            <label
-                                htmlFor="displayOrder"
-                            >
-                                Display Order
-                            </label>
-
-                            <input
-                                id="displayOrder"
-                                name="displayOrder"
-                                type="number"
-                                min="0"
-                                step="1"
-                                value={
-                                    formData.displayOrder
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                                required={
-                                    isEditing
-                                }
-                            />
-                        </div>
-
-                        <div
-                            className={
-                                "experience-form__checkboxes"
-                            }
-                        >
-                            <label>
-                                <input
-                                    name={
-                                        "currentlyWorking"
-                                    }
-                                    type="checkbox"
-                                    checked={
-                                        formData
-                                            .currentlyWorking
-                                    }
-                                    onChange={
-                                        handleCurrentlyWorkingChange
-                                    }
-                                />
-
-                                {" "}
-                                Currently working
-                            </label>
-
-                            <label>
-                                <input
-                                    name="published"
-                                    type="checkbox"
-                                    checked={
-                                        formData.published
-                                    }
-                                    onChange={
-                                        handleChange
-                                    }
-                                />
-
-                                {" "}
-                                Published
-                            </label>
-                        </div>
-
-                        <div
-                            className={
-                                "experience-form__field "
-                                + "experience-form__field--full"
-                            }
-                        >
-                            <label
-                                htmlFor="description"
-                            >
-                                Description
-                            </label>
-
-                            <textarea
-                                id="description"
-                                name="description"
-                                maxLength={5000}
-                                rows={6}
-                                value={
-                                    formData.description
-                                }
-                                onChange={
-                                    handleChange
-                                }
-                            />
-                        </div>
-
+                        {error}
                     </div>
+                )
+            }
 
-                    {
-                        error && (
-                            <div
-                                className={
-                                    "experience-alert "
-                                    + "experience-alert--error"
-                                }
-                            >
-                                {error}
-                            </div>
-                        )
+            <div
+                className={
+                    "experience-form__actions"
+                }
+            >
+                <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={
+                        onCancel
                     }
+                    disabled={
+                        submitting
+                    }
+                >
+                    Cancel
+                </Button>
 
-                    <footer
-                        className={
-                            "experience-modal__footer"
-                        }
-                    >
-
-                        <button
-                            type="button"
-                            className={
-                                "experience-button "
-                                + "experience-button--secondary"
-                            }
-                            onClick={
-                                onCancel
-                            }
-                            disabled={
-                                submitting
-                            }
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            type="submit"
-                            className={
-                                "experience-button "
-                                + "experience-button--primary"
-                            }
-                            disabled={
-                                submitting
-                            }
-                        >
-                            {
-                                submitting
-                                    ? "Saving..."
-                                    : isEditing
-                                        ? "Update Experience"
-                                        : "Create Experience"
-                            }
-                        </button>
-
-                    </footer>
-
-                </form>
-
-            </section>
-
-        </div>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    loading={
+                        submitting
+                    }
+                    loadingLabel="Saving..."
+                >
+                    {
+                        isEditing
+                            ? "Update Experience"
+                            : "Create Experience"
+                    }
+                </Button>
+            </div>
+        </form>
     );
 }
