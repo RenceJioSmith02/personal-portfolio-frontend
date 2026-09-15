@@ -30,24 +30,25 @@
     font-weight: 700;
 }
 
+.experience-form__required {
+    margin-left: 0.25rem;
+    color: var(--admin-danger);
+}
+
 .experience-form__field input,
 .experience-form__field textarea {
     width: 100%;
     padding: 0.72rem 0.8rem;
+
     transition:
-        border-color
-            var(--admin-transition-fast),
-        background
-            var(--admin-transition-fast),
-        box-shadow
-            var(--admin-transition-fast);
+        border-color var(--admin-transition-fast),
+        background var(--admin-transition-fast),
+        box-shadow var(--admin-transition-fast);
 }
 
 .experience-form__field input:focus,
 .experience-form__field textarea:focus {
-    border-color:
-        var(--admin-accent);
-
+    border-color: var(--admin-accent);
     outline: none;
 
     box-shadow:
@@ -55,17 +56,50 @@
         var(--admin-accent-soft);
 }
 
+.experience-form__field input[aria-invalid="true"],
+.experience-form__field textarea[aria-invalid="true"] {
+    border-color: var(--admin-danger);
+
+    box-shadow:
+        0 0 0 3px
+        var(--admin-danger-soft);
+}
+
 .experience-form__field input:disabled,
 .experience-form__field textarea:disabled {
-    color:
-        var(--admin-text-subtle);
-
-    background:
-        var(--admin-surface-muted);
+    color: var(--admin-text-subtle);
+    background: var(--admin-surface-muted);
 }
 
 .experience-form__field--full {
     grid-column: 1 / -1;
+}
+
+.experience-form__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.experience-form__hint {
+    color: var(--admin-text-subtle);
+    font-size: 0.78rem;
+}
+
+.experience-form__field-error {
+    color: #fecdd3;
+    font-size: 0.8rem;
+    font-weight: 650;
+}
+
+.experience-form__counter {
+    color: var(--admin-text-subtle);
+    font-size: 0.78rem;
+}
+
+.experience-form__counter--error {
+    color: var(--admin-danger);
 }
 
 .experience-form__checkboxes {
@@ -80,9 +114,7 @@
     align-items: center;
     gap: 0.55rem;
 
-    color:
-        var(--admin-text-muted);
-
+    color: var(--admin-text-muted);
     cursor: pointer;
 }
 
@@ -90,8 +122,7 @@
     width: 1rem;
     height: 1rem;
 
-    accent-color:
-        var(--admin-primary);
+    accent-color: var(--admin-primary);
 }
 
 .experience-form__checkbox:has(
@@ -126,7 +157,6 @@
 }
 
 @media (max-width: 700px) {
-
     .experience-form__grid {
         grid-template-columns: 1fr;
     }

@@ -1,9 +1,12 @@
 import {
+    useMemo,
     useState,
 } from "react";
 
 import Button
     from "../../../shared/components/Button/Button";
+
+const DESCRIPTION_MAX_LENGTH = 5000;
 
 const EMPTY_FORM = {
     company: "",
@@ -21,6 +24,7 @@ function createInitialForm(
 ) {
 
     if (!experience) {
+
         return {
             ...EMPTY_FORM,
         };
@@ -63,6 +67,93 @@ function createInitialForm(
     };
 }
 
+function validateForm(
+    formData
+) {
+
+    const errors = {};
+
+    const company =
+        formData.company.trim();
+
+    const position =
+        formData.position.trim();
+
+    const description =
+        formData.description.trim();
+
+    const displayOrder =
+        Number(
+            formData.displayOrder
+        );
+
+    if (!company) {
+
+        errors.company =
+            "Company is required.";
+
+    } else if (company.length > 255) {
+
+        errors.company =
+            "Company must not exceed 255 characters.";
+    }
+
+    if (!position) {
+
+        errors.position =
+            "Position is required.";
+
+    } else if (position.length > 255) {
+
+        errors.position =
+            "Position must not exceed 255 characters.";
+    }
+
+    if (
+        description.length
+        > DESCRIPTION_MAX_LENGTH
+    ) {
+
+        errors.description =
+            "Description must not exceed "
+            + `${DESCRIPTION_MAX_LENGTH} characters.`;
+    }
+
+    if (!formData.startDate) {
+
+        errors.startDate =
+            "Start date is required.";
+    }
+
+    if (
+        !formData.currentlyWorking
+        && formData.endDate
+        && formData.startDate
+        && formData.endDate
+        < formData.startDate
+    ) {
+
+        errors.endDate =
+            "End date cannot be earlier "
+            + "than start date.";
+    }
+
+    if (
+        formData.displayOrder === ""
+        || !Number.isInteger(
+            displayOrder
+        )
+        || displayOrder < 0
+    ) {
+
+        errors.displayOrder =
+            "Display order must be "
+            + "a whole number of zero or greater.";
+    }
+
+    return errors;
+}
+
 export default function ExperienceForm({
     experience,
     submitting,
@@ -83,9 +174,27 @@ export default function ExperienceForm({
     );
 
     const [
-        error,
-        setError,
+        touched,
+        setTouched,
+    ] = useState({});
+
+    const [
+        submitError,
+        setSubmitError,
     ] = useState("");
+
+    const validationErrors =
+        useMemo(
+            () => validateForm(
+                formData
+            ),
+            [
+                formData,
+            ]
+        );
+
+    const descriptionLength =
+        formData.description.length;
 
     function handleChange(event) {
 
@@ -104,6 +213,24 @@ export default function ExperienceForm({
                     type === "checkbox"
                         ? checked
                         : value,
+            })
+        );
+
+        if (submitError) {
+            setSubmitError("");
+        }
+    }
+
+    function handleBlur(event) {
+
+        const {
+            name,
+        } = event.target;
+
+        setTouched(
+            previousTouched => ({
+                ...previousTouched,
+                [name]: true,
             })
         );
     }
@@ -129,6 +256,43 @@ export default function ExperienceForm({
                             .endDate,
             })
         );
+
+        setTouched(
+            previousTouched => ({
+                ...previousTouched,
+                currentlyWorking: true,
+                endDate: checked
+                    ? false
+                    : previousTouched.endDate,
+            })
+        );
+    }
+
+    function getFieldError(
+        fieldName
+    ) {
+
+        if (!touched[fieldName]) {
+            return "";
+        }
+
+        return validationErrors[
+            fieldName
+        ] ?? "";
+    }
+
+    function markAllFieldsTouched() {
+
+        setTouched({
+            company: true,
+            position: true,
+            description: true,
+            startDate: true,
+            endDate: true,
+            displayOrder: true,
+            currentlyWorking: true,
+            published: true,
+        });
     }
 
     async function handleSubmit(
@@ -137,64 +301,18 @@ export default function ExperienceForm({
 
         event.preventDefault();
 
-        setError("");
-
-        if (!formData.company.trim()) {
-
-            setError(
-                "Company is required."
-            );
-
-            return;
-        }
-
-        if (!formData.position.trim()) {
-
-            setError(
-                "Position is required."
-            );
-
-            return;
-        }
-
-        if (!formData.startDate) {
-
-            setError(
-                "Start date is required."
-            );
-
-            return;
-        }
+        setSubmitError("");
 
         if (
-            formData.endDate
-            && formData.endDate
-            < formData.startDate
+            Object.keys(
+                validationErrors
+            ).length > 0
         ) {
 
-            setError(
-                "End date cannot be earlier "
-                + "than start date."
-            );
+            markAllFieldsTouched();
 
-            return;
-        }
-
-        const displayOrder =
-            Number(
-                formData.displayOrder
-            );
-
-        if (
-            !Number.isInteger(
-                displayOrder
-            )
-            || displayOrder < 0
-        ) {
-
-            setError(
-                "Display order must be "
-                + "zero or greater."
+            setSubmitError(
+                "Please correct the highlighted fields."
             );
 
             return;
@@ -223,7 +341,10 @@ export default function ExperienceForm({
             currentlyWorking:
                 formData.currentlyWorking,
 
-            displayOrder,
+            displayOrder:
+                Number(
+                    formData.displayOrder
+                ),
 
             published:
                 formData.published,
@@ -240,7 +361,7 @@ export default function ExperienceForm({
                     ?.data
                     ?.message;
 
-            setError(
+            setSubmitError(
                 backendMessage
                 || `Unable to ${
                     isEditing
@@ -251,6 +372,36 @@ export default function ExperienceForm({
         }
     }
 
+    const companyError =
+        getFieldError(
+            "company"
+        );
+
+    const positionError =
+        getFieldError(
+            "position"
+        );
+
+    const startDateError =
+        getFieldError(
+            "startDate"
+        );
+
+    const endDateError =
+        getFieldError(
+            "endDate"
+        );
+
+    const displayOrderError =
+        getFieldError(
+            "displayOrder"
+        );
+
+    const descriptionError =
+        getFieldError(
+            "description"
+        );
+
     return (
         <form
             className={
@@ -259,6 +410,7 @@ export default function ExperienceForm({
             onSubmit={
                 handleSubmit
             }
+            noValidate
         >
             <div
                 className={
@@ -274,6 +426,14 @@ export default function ExperienceForm({
                         htmlFor="company"
                     >
                         Company
+                        <span
+                            className={
+                                "experience-form__required"
+                            }
+                            aria-hidden="true"
+                        >
+                            *
+                        </span>
                     </label>
 
                     <input
@@ -287,11 +447,39 @@ export default function ExperienceForm({
                         onChange={
                             handleChange
                         }
+                        onBlur={
+                            handleBlur
+                        }
                         disabled={
                             submitting
                         }
-                        required
+                        aria-invalid={
+                            Boolean(
+                                companyError
+                            )
+                        }
+                        aria-describedby={
+                            companyError
+                                ? "company-error"
+                                : undefined
+                        }
+                        autoComplete={
+                            "organization"
+                        }
                     />
+
+                    {
+                        companyError && (
+                            <span
+                                id="company-error"
+                                className={
+                                    "experience-form__field-error"
+                                }
+                            >
+                                {companyError}
+                            </span>
+                        )
+                    }
                 </div>
 
                 <div
@@ -303,6 +491,14 @@ export default function ExperienceForm({
                         htmlFor="position"
                     >
                         Position
+                        <span
+                            className={
+                                "experience-form__required"
+                            }
+                            aria-hidden="true"
+                        >
+                            *
+                        </span>
                     </label>
 
                     <input
@@ -316,11 +512,39 @@ export default function ExperienceForm({
                         onChange={
                             handleChange
                         }
+                        onBlur={
+                            handleBlur
+                        }
                         disabled={
                             submitting
                         }
-                        required
+                        aria-invalid={
+                            Boolean(
+                                positionError
+                            )
+                        }
+                        aria-describedby={
+                            positionError
+                                ? "position-error"
+                                : undefined
+                        }
+                        autoComplete={
+                            "organization-title"
+                        }
                     />
+
+                    {
+                        positionError && (
+                            <span
+                                id="position-error"
+                                className={
+                                    "experience-form__field-error"
+                                }
+                            >
+                                {positionError}
+                            </span>
+                        )
+                    }
                 </div>
 
                 <div
@@ -332,6 +556,14 @@ export default function ExperienceForm({
                         htmlFor="startDate"
                     >
                         Start Date
+                        <span
+                            className={
+                                "experience-form__required"
+                            }
+                            aria-hidden="true"
+                        >
+                            *
+                        </span>
                     </label>
 
                     <input
@@ -344,11 +576,36 @@ export default function ExperienceForm({
                         onChange={
                             handleChange
                         }
+                        onBlur={
+                            handleBlur
+                        }
                         disabled={
                             submitting
                         }
-                        required
+                        aria-invalid={
+                            Boolean(
+                                startDateError
+                            )
+                        }
+                        aria-describedby={
+                            startDateError
+                                ? "start-date-error"
+                                : undefined
+                        }
                     />
+
+                    {
+                        startDateError && (
+                            <span
+                                id="start-date-error"
+                                className={
+                                    "experience-form__field-error"
+                                }
+                            >
+                                {startDateError}
+                            </span>
+                        )
+                    }
                 </div>
 
                 <div
@@ -376,12 +633,52 @@ export default function ExperienceForm({
                         onChange={
                             handleChange
                         }
+                        onBlur={
+                            handleBlur
+                        }
                         disabled={
                             submitting
                             || formData
                                 .currentlyWorking
                         }
+                        aria-invalid={
+                            Boolean(
+                                endDateError
+                            )
+                        }
+                        aria-describedby={
+                            endDateError
+                                ? "end-date-error"
+                                : undefined
+                        }
                     />
+
+                    {
+                        endDateError && (
+                            <span
+                                id="end-date-error"
+                                className={
+                                    "experience-form__field-error"
+                                }
+                            >
+                                {endDateError}
+                            </span>
+                        )
+                    }
+
+                    {
+                        formData.currentlyWorking
+                        && (
+                            <span
+                                className={
+                                    "experience-form__hint"
+                                }
+                            >
+                                End date is disabled
+                                while currently working.
+                            </span>
+                        )
+                    }
                 </div>
 
                 <div
@@ -393,6 +690,14 @@ export default function ExperienceForm({
                         htmlFor="displayOrder"
                     >
                         Display Order
+                        <span
+                            className={
+                                "experience-form__required"
+                            }
+                            aria-hidden="true"
+                        >
+                            *
+                        </span>
                     </label>
 
                     <input
@@ -407,11 +712,53 @@ export default function ExperienceForm({
                         onChange={
                             handleChange
                         }
+                        onBlur={
+                            handleBlur
+                        }
                         disabled={
                             submitting
                         }
-                        required
+                        aria-invalid={
+                            Boolean(
+                                displayOrderError
+                            )
+                        }
+                        aria-describedby={
+                            displayOrderError
+                                ? "display-order-error"
+                                : "display-order-hint"
+                        }
                     />
+
+                    {
+                        displayOrderError
+                            ? (
+                                <span
+                                    id={
+                                        "display-order-error"
+                                    }
+                                    className={
+                                        "experience-form__field-error"
+                                    }
+                                >
+                                    {
+                                        displayOrderError
+                                    }
+                                </span>
+                            )
+                            : (
+                                <span
+                                    id={
+                                        "display-order-hint"
+                                    }
+                                    className={
+                                        "experience-form__hint"
+                                    }
+                                >
+                                    Lower numbers appear first.
+                                </span>
+                            )
+                    }
                 </div>
 
                 <div
@@ -477,16 +824,43 @@ export default function ExperienceForm({
                         + "experience-form__field--full"
                     }
                 >
-                    <label
-                        htmlFor="description"
+                    <div
+                        className={
+                            "experience-form__label-row"
+                        }
                     >
-                        Description
-                    </label>
+                        <label
+                            htmlFor={
+                                "description"
+                            }
+                        >
+                            Description
+                        </label>
+
+                        <span
+                            className={
+                                descriptionLength
+                                > DESCRIPTION_MAX_LENGTH
+                                    ? "experience-form__counter experience-form__counter--error"
+                                    : "experience-form__counter"
+                            }
+                        >
+                            {
+                                descriptionLength
+                            }
+                            /
+                            {
+                                DESCRIPTION_MAX_LENGTH
+                            }
+                        </span>
+                    </div>
 
                     <textarea
                         id="description"
                         name="description"
-                        maxLength={5000}
+                        maxLength={
+                            DESCRIPTION_MAX_LENGTH
+                        }
                         rows={6}
                         value={
                             formData.description
@@ -494,15 +868,45 @@ export default function ExperienceForm({
                         onChange={
                             handleChange
                         }
+                        onBlur={
+                            handleBlur
+                        }
                         disabled={
                             submitting
                         }
+                        aria-invalid={
+                            Boolean(
+                                descriptionError
+                            )
+                        }
+                        aria-describedby={
+                            descriptionError
+                                ? "description-error"
+                                : undefined
+                        }
                     />
+
+                    {
+                        descriptionError && (
+                            <span
+                                id={
+                                    "description-error"
+                                }
+                                className={
+                                    "experience-form__field-error"
+                                }
+                            >
+                                {
+                                    descriptionError
+                                }
+                            </span>
+                        )
+                    }
                 </div>
             </div>
 
             {
-                error && (
+                submitError && (
                     <div
                         className={
                             "admin-alert "
@@ -511,7 +915,7 @@ export default function ExperienceForm({
                         }
                         role="alert"
                     >
-                        {error}
+                        {submitError}
                     </div>
                 )
             }
@@ -540,7 +944,9 @@ export default function ExperienceForm({
                     loading={
                         submitting
                     }
-                    loadingLabel="Saving..."
+                    loadingLabel={
+                        "Saving..."
+                    }
                 >
                     {
                         isEditing

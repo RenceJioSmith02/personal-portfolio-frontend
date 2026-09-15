@@ -1,0 +1,123 @@
+.ui-toast-viewport {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index:
+        calc(
+            var(--admin-z-modal)
+            + 100
+        );
+
+    width: min(390px, calc(100vw - 2rem));
+
+    display: grid;
+    gap: 0.75rem;
+
+    pointer-events: none;
+}
+
+.ui-toast {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.9rem 1rem;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--admin-surface-raised),
+            var(--admin-surface)
+        );
+
+    border: 1px solid var(--admin-border);
+    border-left-width: 4px;
+    border-radius: var(--admin-radius-md);
+
+    box-shadow: var(--admin-shadow);
+
+    pointer-events: auto;
+
+    animation:
+        ui-toast-enter
+        var(--admin-transition-normal)
+        var(--admin-ease);
+}
+
+.ui-toast--success {
+    border-left-color:
+        var(--admin-success);
+}
+
+.ui-toast--error {
+    border-left-color:
+        var(--admin-danger);
+}
+
+.ui-toast--info {
+    border-left-color:
+        var(--admin-accent);
+}
+
+.ui-toast__content {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.ui-toast__content strong {
+    color: var(--admin-text);
+    font-size: 0.9rem;
+}
+
+.ui-toast__content p {
+    color: var(--admin-text-muted);
+    font-size: 0.86rem;
+}
+
+.ui-toast__close {
+    flex: 0 0 auto;
+
+    width: 30px;
+    height: 30px;
+
+    display: inline-grid;
+    place-items: center;
+
+    border-radius: var(--admin-radius-sm);
+
+    color: var(--admin-text-muted);
+    background: transparent;
+
+    font-size: 1.3rem;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.ui-toast__close:hover {
+    color: var(--admin-text);
+    background: var(--admin-surface-hover);
+}
+
+@keyframes ui-toast-enter {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .ui-toast-viewport {
+        top: 0.75rem;
+        right: 0.75rem;
+        left: 0.75rem;
+
+        width: auto;
+    }
+}

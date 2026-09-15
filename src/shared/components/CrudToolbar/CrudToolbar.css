@@ -1,0 +1,116 @@
+.ui-crud-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18, 36, 59, 0.88),
+            rgba(10, 23, 40, 0.88)
+        );
+
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius-lg);
+}
+
+.ui-crud-toolbar__controls {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+
+    flex: 1;
+}
+
+.ui-crud-toolbar__search,
+.ui-crud-toolbar__filter {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.ui-crud-toolbar__search {
+    flex: 1 1 260px;
+    max-width: 420px;
+}
+
+.ui-crud-toolbar__filter {
+    flex: 0 1 180px;
+}
+
+.ui-crud-toolbar label {
+    color: var(--admin-text-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.ui-crud-toolbar input,
+.ui-crud-toolbar select {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.65rem 0.75rem;
+
+    transition:
+        border-color var(--admin-transition-fast),
+        box-shadow var(--admin-transition-fast);
+}
+
+.ui-crud-toolbar input:focus,
+.ui-crud-toolbar select:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+    box-shadow:
+        0 0 0 3px
+        var(--admin-accent-soft);
+}
+
+.ui-crud-toolbar__summary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.85rem;
+}
+
+.ui-crud-toolbar__summary span {
+    color: var(--admin-text-subtle);
+    font-size: 0.86rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+    .ui-crud-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ui-crud-toolbar__search,
+    .ui-crud-toolbar__filter {
+        max-width: none;
+    }
+
+    .ui-crud-toolbar__summary {
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 600px) {
+    .ui-crud-toolbar__controls {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .ui-crud-toolbar__summary {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ui-crud-toolbar__summary .ui-button {
+        width: 100%;
+    }
+}

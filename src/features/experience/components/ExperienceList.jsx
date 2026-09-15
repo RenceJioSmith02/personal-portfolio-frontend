@@ -50,6 +50,7 @@ export default function ExperienceList({
     onCreate,
     onEdit,
     onDelete,
+    hasActiveFilters = false,
 }) {
 
     const columns = [
@@ -117,9 +118,10 @@ export default function ExperienceList({
                         variant="secondary"
                         size="small"
                         onClick={
-                            () => onEdit(
-                                experience
-                            )
+                            () =>
+                                onEdit(
+                                    experience
+                                )
                         }
                     >
                         Edit
@@ -130,9 +132,10 @@ export default function ExperienceList({
                         variant="danger"
                         size="small"
                         onClick={
-                            () => onDelete(
-                                experience
-                            )
+                            () =>
+                                onDelete(
+                                    experience
+                                )
                         }
                     >
                         Delete
@@ -155,18 +158,24 @@ export default function ExperienceList({
                 "Experience management table"
             }
             emptyTitle={
-                "No experiences found"
+                hasActiveFilters
+                    ? "No matching experiences"
+                    : "No experiences found"
             }
             emptyDescription={
-                "Create your first work "
-                + "experience to display "
-                + "it in your portfolio."
+                hasActiveFilters
+                    ? "Try changing your search or filters."
+                    : "Create your first work experience to display it in your portfolio."
             }
             emptyActionLabel={
-                "Create Experience"
+                hasActiveFilters
+                    ? undefined
+                    : "Create Experience"
             }
             onEmptyAction={
-                onCreate
+                hasActiveFilters
+                    ? undefined
+                    : onCreate
             }
         />
     );

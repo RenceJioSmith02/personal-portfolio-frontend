@@ -1,0 +1,244 @@
+.service-page {
+    width: 100%;
+}
+
+.service-page__alert {
+    margin-bottom: 1.25rem;
+}
+
+.service-form {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.service-form__grid {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+}
+
+.service-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.service-form__field label {
+    color: var(--admin-text);
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.service-form__field input,
+.service-form__field textarea,
+.service-form__field select {
+    width: 100%;
+    padding: 0.72rem 0.8rem;
+
+    transition:
+        border-color var(--admin-transition-fast),
+        background var(--admin-transition-fast),
+        box-shadow var(--admin-transition-fast);
+}
+
+.service-form__field input:focus,
+.service-form__field textarea:focus {
+    border-color: var(--admin-accent);
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px
+        var(--admin-accent-soft);
+}
+
+.service-form__field input[aria-invalid="true"],
+.service-form__field textarea[aria-invalid="true"] {
+    border-color: var(--admin-danger);
+
+    box-shadow:
+        0 0 0 3px
+        var(--admin-danger-soft);
+}
+
+.service-form__field input:disabled,
+.service-form__field textarea:disabled {
+    color: var(--admin-text-subtle);
+    background: var(--admin-surface-muted);
+}
+
+.service-form__field--full {
+    grid-column: 1 / -1;
+}
+
+.service-form__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.service-form__required {
+    margin-left: 0.25rem;
+    color: var(--admin-danger);
+}
+
+.service-form__hint {
+    color: var(--admin-text-subtle);
+    font-size: 0.78rem;
+}
+
+.service-form__field-error {
+    color: #fecdd3;
+    font-size: 0.8rem;
+    font-weight: 650;
+}
+
+.service-form__counter {
+    color: var(--admin-text-subtle);
+    font-size: 0.78rem;
+}
+
+.service-form__counter--error {
+    color: var(--admin-danger);
+}
+
+.service-form__checkboxes {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.service-form__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+
+    color: var(--admin-text-muted);
+    cursor: pointer;
+}
+
+.service-form__checkbox input {
+    width: 1rem;
+    height: 1rem;
+
+    accent-color: var(--admin-primary);
+}
+
+.service-form__checkbox:has(
+    input:disabled
+) {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.service-form__error {
+    margin-top: 0;
+}
+
+.service-form__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    padding-top: 1.25rem;
+
+    border-top:
+        1px solid
+        var(--admin-border);
+}
+
+.service-list__icon {
+    max-width: 130px;
+    overflow: hidden;
+
+    color: var(--admin-primary);
+
+    font-size: 0.82rem;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.service-list__description {
+    display: block;
+    min-width: 220px;
+    max-width: 440px;
+
+    color: var(--admin-text-muted);
+    line-height: 1.5;
+}
+
+.service-list__actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+
+.service-form__icon-control {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        52px;
+    gap: 0.75rem;
+}
+
+.service-form__icon-preview {
+    width: 52px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--admin-primary);
+    background: var(--admin-primary-soft);
+
+    border: 1px solid rgba(99, 234, 211, 0.3);
+    border-radius: var(--admin-radius-sm);
+}
+
+.service-form__icon-preview span {
+    color: var(--admin-text-subtle);
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+@media (max-width: 480px) {
+
+    .service-form__icon-control {
+        grid-template-columns: 1fr;
+    }
+
+    .service-form__icon-preview {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .service-form__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .service-form__field--full {
+        grid-column: auto;
+    }
+
+    .service-form__actions {
+        flex-direction: column-reverse;
+    }
+
+    .service-form__actions .ui-button {
+        width: 100%;
+    }
+
+    .service-list__actions {
+        justify-content: flex-start;
+    }
+}

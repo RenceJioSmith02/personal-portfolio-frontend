@@ -1,17 +1,25 @@
 import {
     useCallback,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 
 import ConfirmDialog
     from "../../../shared/components/ConfirmDialog/ConfirmDialog";
 
+import CrudToolbar
+    from "../../../shared/components/CrudToolbar/CrudToolbar";
+
 import Modal
     from "../../../shared/components/Modal/Modal";
 
 import PageHeader
     from "../../../shared/components/PageHeader/PageHeader";
+
+import {
+    useToast,
+} from "../../../shared/components/Toast/ToastContext";
 
 import ExperienceForm
     from "../components/ExperienceForm";
@@ -28,7 +36,52 @@ import {
 
 import "../styles/experience.css";
 
+const STATUS_FILTER_OPTIONS = [
+    {
+        value: "all",
+        label: "All statuses",
+    },
+    {
+        value: "published",
+        label: "Published",
+    },
+    {
+        value: "draft",
+        label: "Draft",
+    },
+];
+
+const EMPLOYMENT_FILTER_OPTIONS = [
+    {
+        value: "all",
+        label: "All experiences",
+    },
+    {
+        value: "current",
+        label: "Currently working",
+    },
+    {
+        value: "past",
+        label: "Past experience",
+    },
+];
+
+function getErrorMessage(
+    exception,
+    fallbackMessage
+) {
+
+    return exception.response
+        ?.data
+        ?.message
+        || fallbackMessage;
+}
+
 export default function ExperiencePage() {
+
+    const {
+        showToast,
+    } = useToast();
 
     const [
         experiences,
@@ -39,6 +92,11 @@ export default function ExperiencePage() {
         loading,
         setLoading,
     ] = useState(true);
+
+    const [
+        refreshing,
+        setRefreshing,
+    ] = useState(false);
 
     const [
         submitting,
@@ -56,6 +114,21 @@ export default function ExperiencePage() {
     ] = useState("");
 
     const [
+        searchTerm,
+        setSearchTerm,
+    ] = useState("");
+
+    const [
+        statusFilter,
+        setStatusFilter,
+    ] = useState("all");
+
+    const [
+        employmentFilter,
+        setEmploymentFilter,
+    ] = useState("all");
+
+    const [
         isFormOpen,
         setIsFormOpen,
     ] = useState(false);
@@ -71,41 +144,169 @@ export default function ExperiencePage() {
     ] = useState(null);
 
     const loadExperiences =
-        useCallback(async () => {
+        useCallback(
+            async ({
+                showConfirmation = false,
+            } = {}) => {
 
-            setPageError("");
+                setPageError("");
 
-            try {
+                try {
 
-                const data =
-                    await getExperiences();
+                    const data =
+                        await getExperiences();
 
-                setExperiences(data);
+                    setExperiences(data);
 
-            } catch (exception) {
+                    if (showConfirmation) {
 
-                const message =
-                    exception.response
-                        ?.data
-                        ?.message;
+                        showToast(
+                            "Experience list refreshed.",
+                            "info"
+                        );
+                    }
 
-                setPageError(
-                    message
-                    || "Unable to load experiences."
-                );
+                } catch (exception) {
 
-            } finally {
+                    const message =
+                        getErrorMessage(
+                            exception,
+                            "Unable to load experiences."
+                        );
 
-                setLoading(false);
-            }
+                    setPageError(message);
 
-        }, []);
+                    if (showConfirmation) {
+
+                        showToast(
+                            message,
+                            "error"
+                        );
+                    }
+
+                    throw exception;
+
+                } finally {
+
+                    setLoading(false);
+                }
+
+            },
+            [
+                showToast,
+            ]
+        );
 
     useEffect(() => {
 
-        loadExperiences();
+        loadExperiences()
+            .catch(() => {
+                // Page error is already handled.
+            });
 
-    }, [loadExperiences]);
+    }, [
+        loadExperiences,
+    ]);
+
+    const filteredExperiences =
+        useMemo(
+            () => {
+
+                const normalizedSearch =
+                    searchTerm
+                        .trim()
+                        .toLowerCase();
+
+                return experiences.filter(
+                    experience => {
+
+                        const matchesSearch =
+                            !normalizedSearch
+                            || [
+                                experience.company,
+                                experience.position,
+                                experience.description,
+                            ]
+                                .filter(Boolean)
+                                .some(
+                                    value =>
+                                        value
+                                            .toLowerCase()
+                                            .includes(
+                                                normalizedSearch
+                                            )
+                                );
+
+                        const matchesStatus =
+                            statusFilter === "all"
+                            || (
+                                statusFilter
+                                === "published"
+                                && experience.published
+                            )
+                            || (
+                                statusFilter
+                                === "draft"
+                                && !experience.published
+                            );
+
+                        const matchesEmployment =
+                            employmentFilter === "all"
+                            || (
+                                employmentFilter
+                                === "current"
+                                && experience
+                                    .currentlyWorking
+                            )
+                            || (
+                                employmentFilter
+                                === "past"
+                                && !experience
+                                    .currentlyWorking
+                            );
+
+                        return (
+                            matchesSearch
+                            && matchesStatus
+                            && matchesEmployment
+                        );
+                    }
+                );
+            },
+            [
+                experiences,
+                searchTerm,
+                statusFilter,
+                employmentFilter,
+            ]
+        );
+
+    const filters = [
+        {
+            id:
+                "experience-status-filter",
+            label:
+                "Status",
+            value:
+                statusFilter,
+            onChange:
+                setStatusFilter,
+            options:
+                STATUS_FILTER_OPTIONS,
+        },
+        {
+            id:
+                "experience-employment-filter",
+            label:
+                "Employment",
+            value:
+                employmentFilter,
+            onChange:
+                setEmploymentFilter,
+            options:
+                EMPLOYMENT_FILTER_OPTIONS,
+        },
+    ];
 
     function openCreateModal() {
 
@@ -152,15 +353,39 @@ export default function ExperiencePage() {
         setExperienceToDelete(null);
     }
 
+    async function handleRefresh() {
+
+        setRefreshing(true);
+
+        try {
+
+            await loadExperiences({
+                showConfirmation: true,
+            });
+
+        } catch {
+            // Toast and page error are already handled.
+        } finally {
+
+            setRefreshing(false);
+        }
+    }
+
     async function handleSubmit(
         payload
     ) {
 
         setSubmitting(true);
+        setPageError("");
+
+        const isEditing =
+            Boolean(
+                selectedExperience
+            );
 
         try {
 
-            if (selectedExperience) {
+            if (isEditing) {
 
                 await updateExperience(
                     selectedExperience.id,
@@ -178,6 +403,30 @@ export default function ExperiencePage() {
 
             setIsFormOpen(false);
             setSelectedExperience(null);
+
+            showToast(
+                isEditing
+                    ? "Experience updated successfully."
+                    : "Experience created successfully.",
+                "success"
+            );
+
+        } catch (exception) {
+
+            const message =
+                getErrorMessage(
+                    exception,
+                    isEditing
+                        ? "Unable to update experience."
+                        : "Unable to create experience."
+                );
+
+            showToast(
+                message,
+                "error"
+            );
+
+            throw exception;
 
         } finally {
 
@@ -204,16 +453,24 @@ export default function ExperiencePage() {
 
             setExperienceToDelete(null);
 
+            showToast(
+                "Experience deleted successfully.",
+                "success"
+            );
+
         } catch (exception) {
 
             const message =
-                exception.response
-                    ?.data
-                    ?.message;
+                getErrorMessage(
+                    exception,
+                    "Unable to delete experience."
+                );
 
-            setPageError(
-                message
-                || "Unable to delete experience."
+            setPageError(message);
+
+            showToast(
+                message,
+                "error"
             );
 
         } finally {
@@ -254,6 +511,30 @@ export default function ExperiencePage() {
                 }
             />
 
+            <CrudToolbar
+                searchValue={
+                    searchTerm
+                }
+                searchPlaceholder={
+                    "Search company, position, or description"
+                }
+                onSearchChange={
+                    setSearchTerm
+                }
+                filters={
+                    filters
+                }
+                onRefresh={
+                    handleRefresh
+                }
+                refreshing={
+                    refreshing
+                }
+                resultCount={
+                    filteredExperiences.length
+                }
+            />
+
             {
                 pageError && (
                     <div
@@ -271,7 +552,7 @@ export default function ExperiencePage() {
 
             <ExperienceList
                 experiences={
-                    experiences
+                    filteredExperiences
                 }
                 loading={
                     loading
@@ -284,6 +565,15 @@ export default function ExperiencePage() {
                 }
                 onDelete={
                     openDeleteDialog
+                }
+                hasActiveFilters={
+                    Boolean(
+                        searchTerm.trim()
+                    )
+                    || statusFilter
+                        !== "all"
+                    || employmentFilter
+                        !== "all"
                 }
             />
 
