@@ -1,0 +1,170 @@
+.projects__head {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: end;
+
+    gap: 2rem;
+}
+
+.projects {
+    
+    display: grid;
+
+    gap: 2rem;
+
+    grid-template-columns:
+        repeat(
+            2,
+            1fr
+        );
+}
+
+.project-card {
+
+    padding: 0;
+
+    height: 100%;
+}
+
+.project-card__image {
+
+    overflow: hidden;
+
+    aspect-ratio: 16 / 9;
+
+    background:
+        var(--surface2);
+}
+
+.project-card__image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    transition:
+        transform var(--slow)
+        var(--ease);
+}
+
+.project-card:hover
+.project-card__image img {
+
+    transform:
+        scale(1.045);
+}
+
+.project-card__body {
+
+    padding: 1.35rem;
+}
+
+.project-card h3 {
+
+    margin:
+        0.8rem
+        0
+        0.55rem;
+}
+
+.project-card p {
+
+    margin-bottom: 1rem;
+}
+
+.project-card__actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 1rem;
+
+    margin-top: 1.2rem;
+}
+
+.project-card__actions a {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 0.45rem;
+
+    color:
+        var(--primary);
+
+    font-weight: 800;
+
+    font-size: 0.88rem;
+
+    transition:
+        color var(--fast);
+}
+
+.project-card__actions a:hover {
+
+    color:
+        #ffffff;
+}
+
+.project-card__actions svg {
+
+    flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+
+    .projects__head {
+
+        flex-direction: column;
+
+        align-items: start;
+    }
+
+    .projects {
+
+        grid-template-columns:
+            1fr;
+    }
+}
+
+
+.project-card__image-fallback {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+
+    color:
+        var(--muted);
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--surface2),
+            var(--surface)
+        );
+
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.project-card__body h3 a {
+    transition:
+        color var(--fast);
+}
+
+.project-card__body h3 a:hover {
+    color:
+        var(--primary);
+}

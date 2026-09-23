@@ -1,0 +1,17 @@
+@import "../features/public/styles/public-variables.css";
+@import "../features/public/styles/public-reset.css";
+@import "../features/public/styles/public-global.css";
+
+
+@import "../features/public/components/Navbar/navbar.css";
+@import "../features/public/components/Hero/hero.css";
+@import "../features/public/components/About/about.css";
+
+@import "../features/public/components/Capability/capability.css";
+@import "../features/public/components/Experience/experience.css";
+@import "../features/public/components/Project/project.css";
+@import "../features/public/components/Service/service.css";
+
+@import "../features/public/components/Contact/contact.css";
+@import "../features/public/components/Footer/footer.css";
+

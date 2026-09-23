@@ -13,6 +13,7 @@ import {
 } from "./shared/components/Toast/ToastContext";
 
 import "./styles/index.css";
+import "./styles/public-index.css";
 
 ReactDOM.createRoot(
     document.getElementById("root")

@@ -1,0 +1,192 @@
+.tech-marquee {
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.marquee {
+
+    padding:
+        1rem 0
+        2rem;
+
+    display: flex;
+
+    overflow: hidden;
+
+    width: 100%;
+
+    position: relative;
+}
+
+/* Track */
+
+.marquee__track {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1rem;
+
+    flex-shrink: 0;
+
+    min-width: 100%;
+
+    animation:
+        marquee
+        18s
+        linear
+        infinite;
+}
+
+/* Faster than before */
+
+.marquee:hover
+.marquee__track {
+
+    animation-play-state:
+        paused;
+}
+
+/* Card */
+
+.tech-pill {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: .65rem;
+
+    flex-shrink: 0;
+
+    white-space: nowrap;
+
+    padding:
+        .9rem
+        1.25rem;
+
+    border-radius:
+        999px;
+
+    background:
+        rgba(
+            18,
+            36,
+            59,
+            .92
+        );
+
+    border:
+        1px solid
+        var(--border);
+
+    backdrop-filter:
+        blur(14px);
+
+    transition:
+        all var(--fast);
+}
+
+.tech-pill svg {
+
+    color:
+        var(--primary);
+}
+
+.tech-pill:hover {
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        var(--primary);
+
+    background:
+        rgba(
+            99,
+            234,
+            211,
+            .08
+        );
+}
+
+/* Fade left */
+
+.tech-marquee__fade-left {
+
+    position: absolute;
+
+    left: 0;
+
+    top: 0;
+
+    width: 150px;
+
+    height: 100%;
+
+    z-index: 5;
+
+    background:
+        linear-gradient(
+            to right,
+            var(--bg),
+            transparent
+        );
+}
+
+/* Fade right */
+
+.tech-marquee__fade-right {
+
+    position: absolute;
+
+    right: 0;
+
+    top: 0;
+
+    width: 150px;
+
+    height: 100%;
+
+    z-index: 5;
+
+    background:
+        linear-gradient(
+            to left,
+            var(--bg),
+            transparent
+        );
+}
+
+@keyframes marquee {
+
+    from {
+
+        transform:
+            translateX(0);
+    }
+
+    to {
+
+        transform:
+            translateX(-100%);
+    }
+}
+
+@media (max-width: 768px) {
+
+    .marquee__track {
+
+        animation-duration:
+            14s;
+    }
+
+    .tech-marquee__fade-left,
+    .tech-marquee__fade-right {
+
+        width: 70px;
+    }
+}

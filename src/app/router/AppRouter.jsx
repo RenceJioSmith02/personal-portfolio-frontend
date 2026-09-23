@@ -23,6 +23,15 @@ import CapabilityPage
 import ProjectPage
     from "../../features/project/pages/ProjectPage";
 
+import HomePage
+    from "../../features/public/pages/HomePage";
+
+import PublicLayout
+    from "../../features/public/layouts/PublicLayout";
+
+import ProjectDetailsPage
+    from "../../features/public/pages/ProjectDetailsPage";
+
 import ProtectedRoute
     from "../../shared/components/ProtectedRoute";
 
@@ -36,15 +45,34 @@ export default function AppRouter() {
 
             <Routes>
 
+                {/* ==========================
+                   PUBLIC WEBSITE
+                ========================== */}
+
                 <Route
-                    path="/"
                     element={
-                        <Navigate
-                            to="/login"
-                            replace
-                        />
+                        <PublicLayout />
                     }
-                />
+                >
+                    <Route
+                        path="/"
+                        element={
+                            <HomePage />
+                        }
+                    />
+
+                    <Route
+                        path="/projects/:slug"
+                        element={
+                            <ProjectDetailsPage />
+                        }
+                    />
+
+                </Route>
+
+                {/* ==========================
+                   AUTH
+                ========================== */}
 
                 <Route
                     path="/login"
@@ -53,6 +81,10 @@ export default function AppRouter() {
                     }
                 />
 
+                {/* ==========================
+                   ADMIN CMS
+                ========================== */}
+
                 <Route
                     element={
                         <ProtectedRoute>
@@ -60,7 +92,6 @@ export default function AppRouter() {
                         </ProtectedRoute>
                     }
                 >
-
                     <Route
                         path="/dashboard"
                         element={
@@ -95,8 +126,21 @@ export default function AppRouter() {
                             <ProjectPage />
                         }
                     />
-
                 </Route>
+
+                {/* ==========================
+                   FALLBACK
+                ========================== */}
+
+                <Route
+                    path="*"
+                    element={
+                        <Navigate
+                            to="/"
+                            replace
+                        />
+                    }
+                />
 
             </Routes>
 

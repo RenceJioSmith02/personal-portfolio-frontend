@@ -1,0 +1,425 @@
+.hero {
+
+    min-height:
+        calc(
+            100svh - 78px
+        );
+
+    display: grid;
+
+    place-items: center;
+ 
+    position: relative;
+
+    padding:
+        4.8rem
+        0
+        5.5rem;
+}
+
+.hero__grid {
+
+    display: grid;
+
+    grid-template-columns:
+        1.15fr
+        0.85fr;
+
+    align-items: center;
+
+    gap: 4.6rem;
+}
+
+.hero__copy {
+
+    animation:
+        hero-in
+        0.8s
+        var(--ease)
+        both;
+}
+
+.hero__copy > p {
+
+    max-width: 42rem;
+
+    margin:
+        1.35rem 0 1.75rem;
+
+    font-size:
+        clamp(
+            1rem,
+            2vw,
+            1.18rem
+        );
+}
+
+.hero h1 span {
+    color:
+        var(--primary);
+}
+
+.hero__actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 1rem;
+
+    margin-top: 2rem;
+
+    margin-bottom: 1.5rem;
+}
+.hero__actions .btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 0.6rem;
+}
+
+.hero__actions .btn svg {
+
+    flex-shrink: 0;
+}
+
+.hero__socials {
+
+    display: flex;
+
+    gap: 0.65rem;
+}
+
+.hero__socials a {
+
+    display: grid;
+
+    place-items: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 50%;
+
+    color:
+        var(--muted);
+
+    transition:
+        color var(--fast),
+        transform var(--fast),
+        border-color var(--fast),
+        background var(--fast);
+}
+
+.hero__socials a:hover {
+
+    color:
+        var(--primary);
+
+    border-color:
+        var(--primary);
+
+    background:
+        rgba(
+            99,
+            234,
+            211,
+            0.08
+        );
+
+    transform:
+        translateY(-4px);
+}
+
+.hero__visual {
+
+    position: relative;
+
+    max-width: 34rem;
+
+    margin: auto;
+}
+
+.hero__visual img {
+
+    position: relative;
+
+    width: 100%;
+
+    border-radius: 2rem;
+
+    border:
+        1px solid
+        var(--border);
+
+    box-shadow:
+        var(--shadow2);
+
+    transition:
+        transform var(--slow)
+        var(--ease);
+}
+
+.hero__visual:hover img {
+
+    transform:
+        translateY(-8px)
+        rotate(.6deg);
+}
+
+.hero__ring {
+
+    position: absolute;
+
+    inset: -5%;
+
+    border:
+        1px solid
+        rgba(
+            99,
+            234,
+            211,
+            0.25
+        );
+
+    border-radius: 50%;
+
+    animation:
+        spin
+        20s
+        linear
+        infinite;
+}
+
+.hero__ring::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 14%;
+
+    right: 1%;
+
+    width: .75rem;
+
+    height: .75rem;
+
+    border-radius: 50%;
+
+    background:
+        var(--primary);
+
+    box-shadow:
+        0 0 25px
+        var(--primary);
+}
+
+.floating-card {
+
+    position: absolute;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: .55rem;
+
+    padding:
+        .72rem
+        .85rem;
+
+    border-radius:
+        .8rem;
+
+    background:
+        rgba(
+            8,
+            20,
+            35,
+            .91
+        );
+
+    border:
+        1px solid
+        var(--border);
+
+    box-shadow:
+        var(--shadow);
+
+    backdrop-filter:
+        blur(10px);
+
+    font-weight: 800;
+
+    font-size: .82rem;
+
+    animation:
+        float
+        4s
+        var(--ease)
+        infinite;
+}
+
+.floating-card--top {
+
+    right: -2rem;
+
+    top: 18%;
+}
+
+.floating-card--bottom {
+
+    left: -2rem;
+
+    bottom: 12%;
+
+    animation-delay:
+        -2s;
+}
+
+.floating-card i {
+
+    width: 0.55rem;
+
+    height: 0.55rem;
+
+    border-radius: 50%;
+
+    background:
+        #4ade80;
+}
+
+.scroll-down {
+
+    position: absolute;
+
+    bottom: 1.2rem;
+
+    left: 50%;
+
+    width: 26px;
+
+    height: 44px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--pill);
+}
+
+.scroll-down span {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 8px;
+
+    width: 4px;
+
+    height: 8px;
+
+    border-radius: 5px;
+
+    background:
+        var(--primary);
+
+    animation:
+        scroll-dot
+        1.8s
+        infinite;
+}
+
+@keyframes hero-in {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(22px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: none;
+    }
+}
+
+@keyframes spin {
+
+    to {
+
+        transform:
+            rotate(360deg);
+    }
+}
+
+@keyframes float {
+
+    50% {
+
+        transform:
+            translateY(-10px);
+    }
+}
+
+@keyframes scroll-dot {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, 0);
+    }
+
+    45% {
+
+        opacity: 1;
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, 17px);
+    }
+}
+
+
+
+@media (max-width: 860px) {
+
+    .hero {
+
+        min-height: auto;
+    }
+
+    .hero__grid {
+
+        grid-template-columns: 1fr;
+
+        gap: 3rem;
+    }
+
+    .hero__visual {
+
+        max-width: 28rem;
+    }
+}

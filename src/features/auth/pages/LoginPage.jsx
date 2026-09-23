@@ -1,43 +1,55 @@
 import {
-    useState
+    useState,
 } from "react";
 
 import {
-    useNavigate
+    useNavigate,
 } from "react-router-dom";
 
 import {
-    login as loginRequest
+    Lock,
+    User,
+    ArrowRight,
+} from "lucide-react";
+
+import {
+    login as loginRequest,
 } from "../services/authService";
 
 import {
-    useAuth
+    useAuth,
 } from "../context/AuthContext";
+
+import "./login.css";
 
 export default function LoginPage() {
 
     const navigate =
-            useNavigate();
+        useNavigate();
 
     const {
-        login
+        login,
     } = useAuth();
 
-    const [username,
-        setUsername] =
-            useState("");
+    const [
+        username,
+        setUsername,
+    ] = useState("");
 
-    const [password,
-        setPassword] =
-            useState("");
+    const [
+        password,
+        setPassword,
+    ] = useState("");
 
-    const [error,
-        setError] =
-            useState("");
+    const [
+        error,
+        setError,
+    ] = useState("");
 
-    const [loading,
-        setLoading] =
-            useState(false);
+    const [
+        loading,
+        setLoading,
+    ] = useState(false);
 
     async function handleSubmit(
         event
@@ -51,10 +63,10 @@ export default function LoginPage() {
             setError("");
 
             const response =
-                    await loginRequest({
-                        username,
-                        password,
-                    });
+                await loginRequest({
+                    username,
+                    password,
+                });
 
             login(
                 response.accessToken,
@@ -78,79 +90,150 @@ export default function LoginPage() {
     }
 
     return (
-        <div>
+        <section
+            className="login-page"
+        >
+            <div
+                className="login-glow"
+            />
 
-            <h1>
-                Portfolio CMS Login
-            </h1>
-
-            <form
-                onSubmit={
-                    handleSubmit
-                }
+            <div
+                className="
+                    login-floating
+                    login-floating--top
+                "
             >
+                Secure Access
+            </div>
 
-                <div>
+            <div
+                className="
+                    login-floating
+                    login-floating--bottom
+                "
+            >
+                Portfolio CMS
+            </div>
 
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(
-                            event
-                        ) =>
-                            setUsername(
-                                event.target.value
-                            )
-                        }
-                    />
+            <div
+                className="login-ring"
+            />
 
-                </div>
+            <div
+                className="
+                    login-card
+                "
+            >
+                <span
+                    className="
+                        login-eyebrow
+                    "
+                >
+                    Portfolio CMS
+                </span>
 
-                <br />
+                <h1>
+                    Welcome Back
+                </h1>
 
-                <div>
+                <p>
+                    Sign in to manage
+                    your portfolio,
+                    projects, services,
+                    and experiences.
+                </p>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(
-                            event
-                        ) =>
-                            setPassword(
-                                event.target.value
-                            )
-                        }
-                    />
-
-                </div>
-
-                <br />
-
-                <button
-                    type="submit"
-                    disabled={
-                        loading
+                <form
+                    className="
+                        login-form
+                    "
+                    onSubmit={
+                        handleSubmit
                     }
                 >
+                    <div
+                        className="
+                            login-field
+                        "
+                    >
+                        <User
+                            size={18}
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(
+                                event
+                            ) =>
+                                setUsername(
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </div>
+
+                    <div
+                        className="
+                            login-field
+                        "
+                    >
+                        <Lock
+                            size={18}
+                        />
+
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(
+                                event
+                            ) =>
+                                setPassword(
+                                    event.target.value
+                                )
+                            }
+                        />
+                    </div>
+
                     {
-                        loading
-                            ? "Logging in..."
-                            : "Login"
+                        error && (
+                            <div
+                                className="
+                                    login-error
+                                "
+                            >
+                                {error}
+                            </div>
+                        )
                     }
-                </button>
 
-                {
-                    error && (
-                        <p>
-                            {error}
-                        </p>
-                    )
-                }
+                    <button
+                        type="submit"
+                        disabled={
+                            loading
+                        }
+                        className="
+                            login-button
+                        "
+                    >
+                        {
+                            loading
+                                ? "Signing In..."
+                                : "Sign In"
+                        }
 
-            </form>
-
-        </div>
+                        {
+                            !loading && (
+                                <ArrowRight
+                                    size={18}
+                                />
+                            )
+                        }
+                    </button>
+                </form>
+            </div>
+        </section>
     );
 }
