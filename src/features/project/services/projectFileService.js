@@ -32,18 +32,20 @@ export async function uploadProjectImage(
 }
 
 export async function deleteProjectFile(
-    fileName
+    storageKey
 ) {
 
-    if (!fileName) {
+    if (!storageKey) {
         return;
     }
 
     await axiosClient.delete(
-        `${FILE_ENDPOINT}/${
-            encodeURIComponent(
-                fileName
-            )
-        }`
+        FILE_ENDPOINT,
+        {
+            params: {
+                storageKey,
+            },
+        }
     );
 }
+

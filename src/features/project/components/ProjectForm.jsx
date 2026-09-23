@@ -45,6 +45,7 @@ const EMPTY_FORM = {
     summary: "",
     description: "",
     imageUrl: "",
+    imageStorageKey: "",
     repositoryUrl: "",
     liveUrl: "",
     techStack: "",
@@ -81,6 +82,10 @@ function createInitialForm(
 
         imageUrl:
             project.imageUrl
+            ?? "",
+
+        imageStorageKey:
+            project.imageStorageKey
             ?? "",
 
         repositoryUrl:
@@ -896,14 +901,14 @@ export default function ProjectForm({
         uploadedFile
     ) {
 
-        if (!uploadedFile?.fileName) {
+        if (!uploadedFile?.storageKey) {
             return;
         }
 
         try {
 
             await deleteProjectFile(
-                uploadedFile.fileName
+                uploadedFile.storageKey
             );
 
         } catch {
@@ -946,6 +951,10 @@ export default function ProjectForm({
                 formData.imageUrl.trim()
                 || null;
 
+            let imageStorageKey =
+                formData.imageStorageKey.trim()
+                || null;
+
             if (selectedImage) {
 
                 setUploading(true);
@@ -955,15 +964,22 @@ export default function ProjectForm({
                         selectedImage
                     );
 
-                if (!uploadedFile?.fileUrl) {
+                if (
+                    !uploadedFile?.fileUrl
+                    || !uploadedFile?.storageKey
+                ) {
+
                     throw new Error(
                         "The upload response did not "
-                        + "contain an image URL."
+                        + "contain the required image data."
                     );
                 }
 
                 imageUrl =
                     uploadedFile.fileUrl;
+
+                imageStorageKey =
+                    uploadedFile.storageKey;
             }
 
             const payload = {
@@ -980,6 +996,8 @@ export default function ProjectForm({
                     formData.description.trim(),
 
                 imageUrl,
+
+                imageStorageKey,
 
                 repositoryUrl:
                     formData.repositoryUrl
