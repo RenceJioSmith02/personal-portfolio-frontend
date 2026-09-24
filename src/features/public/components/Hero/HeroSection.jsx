@@ -103,8 +103,11 @@ export default function HeroSection() {
                             />
                         </a>
 
+                        {/* redirect to LinkedIn profile in new tab when clicked. */}
                         <a
-                            href="https://linkedin.com"
+                            href="https://www.linkedin.com/in/rence-jio-smith-bal-ot-8a8aa340a?utm_source=share_via&utm_content=profile&utm_medium=member_ios"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             aria-label="LinkedIn"
                         >
                             <LinkIcon
@@ -113,7 +116,7 @@ export default function HeroSection() {
                         </a>
 
                         <a
-                            href="mailto:your-email@example.com"
+                            href="mailto:rence.jio.smith@gmail.com"
                             aria-label="Email"
                         >
                             <Mail

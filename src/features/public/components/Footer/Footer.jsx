@@ -1,4 +1,27 @@
+import {
+    Link,
+} from "react-router-dom";
+
 import "./footer.css";
+
+const FOOTER_LINKS = [
+    {
+        to: "/#about",
+        label: "About",
+    },
+    {
+        to: "/#projects",
+        label: "Projects",
+    },
+    {
+        to: "/#services",
+        label: "Services",
+    },
+    {
+        to: "/#contact",
+        label: "Contact",
+    },
+];
 
 export default function Footer() {
 
@@ -15,52 +38,45 @@ export default function Footer() {
                     footer__inner
                 "
             >
-                <a
-                    href="#home"
+                <Link
+                    to="/#home"
                     className="footer__logo"
-                    
+                    aria-label="Go to homepage"
                 >
                     <img
                         src="/logo/logo.png"
                         alt="RJ Smith Logo"
-                        className="footer__logo-image"
+                        className="navbar__logo-image"
                     />
-                </a>
+                </Link>
 
                 <p>
-                    Full Stack Java Developer ·
-                    Portfolio CMS
+                    Full Stack Java Developer
                 </p>
 
-                <div
-                    className="
-                        footer__links
-                    "
+                <nav
+                    className="footer__links"
+                    aria-label="Footer navigation"
                 >
-                    <a
-                        href="#about"
-                    >
-                        About
-                    </a>
-
-                    <a
-                        href="#projects"
-                    >
-                        Projects
-                    </a>
-
-                    <a
-                        href="#services"
-                    >
-                        Services
-                    </a>
-
-                    <a
-                        href="#contact"
-                    >
-                        Contact
-                    </a>
-                </div>
+                    {
+                        FOOTER_LINKS.map(
+                            link => (
+                                <Link
+                                    key={
+                                        link.to
+                                    }
+                                    to={
+                                        link.to
+                                    }
+                                >
+                                    {
+                                        link.label
+                                    }
+                                </Link>
+                            )
+                        )
+                    }
+                </nav>
 
                 <p>
                     © {currentYear}

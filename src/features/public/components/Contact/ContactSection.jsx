@@ -301,7 +301,7 @@ export default function ContactSection() {
                             </small>
 
                             <b>
-                                rence.jio.smith@gmail.com
+                                <a href="mailto:rence.jio.smith@gmail.com">rence.jio.smith@gmail.com</a>
                             </b>
                         </span>
                     </div>
