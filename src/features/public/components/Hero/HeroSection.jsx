@@ -95,7 +95,9 @@ export default function HeroSection() {
                         "
                     >
                         <a
-                            href="https://github.com"
+                            href="https://github.com/RenceJioSmith02"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             aria-label="GitHub"
                         >
                             <GitBranch
